@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#bd93f9" />
+      <stop offset="1" stop-color="#8be9fd" />
+    </linearGradient>
+    <marker id="arrL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#bd93f9" />
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#8be9fd" />
+    </marker>
+  </defs>
+  <path stroke="url(#g)" stroke-width="3" stroke-linecap="round"
+        d="M30,14 C18,2 4,8 4,16 C4,24 18,30 30,18" marker-end="url(#arrR)" />
+  <path stroke="url(#g)" stroke-width="3" stroke-linecap="round"
+        d="M34,18 C46,30 60,24 60,16 C60,8 46,2 34,14" marker-end="url(#arrL)" />
+</svg>

@@ -1,0 +1,353 @@
+{
+  "name": "ado-pipeline-manager",
+  "displayName": "Azure DevOps Pipeline Manager",
+  "description": "Browse Azure DevOps pipelines, runs, and live logs from the VS Code activity bar. Edit pipeline YAML and queue runs with full parameter / variable / resource support.",
+  "version": "0.1.0",
+  "publisher": "powers-hell",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Other",
+    "SCM Providers"
+  ],
+  "keywords": [
+    "azure devops",
+    "ado",
+    "pipelines",
+    "ci/cd"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onView:adoPipelines.pipelines",
+    "onCommand:adoPipelines.signIn",
+    "onCommand:adoPipelines.openSettings",
+    "onCommand:adoPipelines.commandPalette"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "adoPipelines",
+          "title": "ADO Pipelines",
+          "icon": "media/infinity.svg"
+        }
+      ]
+    },
+    "views": {
+      "adoPipelines": [
+        {
+          "id": "adoPipelines.pipelines",
+          "name": "Pipelines",
+          "icon": "media/infinity.svg",
+          "contextualTitle": "Azure DevOps Pipelines"
+        },
+        {
+          "id": "adoPipelines.runs",
+          "name": "Recent Runs",
+          "when": "adoPipelines.pipelineSelected"
+        },
+        {
+          "id": "adoPipelines.steps",
+          "name": "Steps",
+          "when": "adoPipelines.runSelected"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "adoPipelines.signIn",
+        "title": "ADO: Sign in",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "adoPipelines.signOut",
+        "title": "ADO: Sign out"
+      },
+      {
+        "command": "adoPipelines.openSettings",
+        "title": "ADO: Configure org / project",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "adoPipelines.refresh",
+        "title": "ADO: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "adoPipelines.runPipeline",
+        "title": "ADO: Run pipeline",
+        "icon": "$(play)"
+      },
+      {
+        "command": "adoPipelines.editPipeline",
+        "title": "ADO: Edit pipeline YAML",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "adoPipelines.openLog",
+        "title": "ADO: Open step log",
+        "icon": "$(output)"
+      },
+      {
+        "command": "adoPipelines.openRunOverview",
+        "title": "ADO: Show run overview"
+      },
+      {
+        "command": "adoPipelines.openPipelineOverview",
+        "title": "ADO: Show pipeline overview",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "adoPipelines.cancelRun",
+        "title": "ADO: Cancel run"
+      },
+      {
+        "command": "adoPipelines.copyPath",
+        "title": "Copy folder path"
+      },
+      {
+        "command": "adoPipelines.filterByPath",
+        "title": "ADO: Filter by folder…",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "adoPipelines.commandPalette",
+        "title": "ADO: Pipeline command palette…"
+      },
+      {
+        "command": "adoPipelines.savePipelineToBranch",
+        "title": "ADO: Save pipeline to new branch…",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "adoPipelines.selectPipeline",
+        "title": "ADO: Select pipeline"
+      },
+      {
+        "command": "adoPipelines.selectRun",
+        "title": "ADO: Select run"
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "adoPipelines.pipelines",
+        "contents": "Browse Azure DevOps pipelines, runs and live logs.\n[Configure organization & project](command:adoPipelines.openSettings)\n[Sign in to Azure DevOps](command:adoPipelines.signIn)\nUses VS Code's built-in Microsoft account provider — no app registration required."
+      },
+      {
+        "view": "adoPipelines.runs",
+        "contents": "Select a pipeline in the **Pipelines** view to load recent runs."
+      },
+      {
+        "view": "adoPipelines.steps",
+        "contents": "Select a run in the **Recent Runs** view to load steps & logs."
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "adoPipelines.refresh",
+          "when": "view == adoPipelines.pipelines",
+          "group": "navigation@1"
+        },
+        {
+          "command": "adoPipelines.filterByPath",
+          "when": "view == adoPipelines.pipelines",
+          "group": "navigation@2"
+        },
+        {
+          "command": "adoPipelines.openSettings",
+          "when": "view == adoPipelines.pipelines",
+          "group": "navigation@9"
+        },
+        {
+          "command": "adoPipelines.refresh",
+          "when": "view == adoPipelines.runs",
+          "group": "navigation@1"
+        },
+        {
+          "command": "adoPipelines.refresh",
+          "when": "view == adoPipelines.steps",
+          "group": "navigation@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "adoPipelines.runPipeline",
+          "when": "viewItem == pipeline",
+          "group": "inline@1"
+        },
+        {
+          "command": "adoPipelines.editPipeline",
+          "when": "viewItem == pipeline",
+          "group": "inline@2"
+        },
+        {
+          "command": "adoPipelines.runPipeline",
+          "when": "viewItem == pipeline",
+          "group": "ado@1"
+        },
+        {
+          "command": "adoPipelines.editPipeline",
+          "when": "viewItem == pipeline",
+          "group": "ado@2"
+        },
+        {
+          "command": "adoPipelines.openPipelineOverview",
+          "when": "viewItem == pipeline",
+          "group": "ado@3"
+        },
+        {
+          "command": "adoPipelines.cancelRun",
+          "when": "viewItem == run-inProgress"
+        },
+        {
+          "command": "adoPipelines.openRunOverview",
+          "when": "viewItem =~ /^run/"
+        },
+        {
+          "command": "adoPipelines.openLog",
+          "when": "viewItem == step-haslog",
+          "group": "inline@1"
+        },
+        {
+          "command": "adoPipelines.copyPath",
+          "when": "viewItem == folder"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "adoPipelines.savePipelineToBranch",
+          "when": "resourceScheme == ado-pipeline",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "adoPipelines.filterByPath"
+        },
+        {
+          "command": "adoPipelines.commandPalette"
+        },
+        {
+          "command": "adoPipelines.savePipelineToBranch",
+          "when": "resourceScheme == ado-pipeline"
+        },
+        {
+          "command": "adoPipelines.runPipeline",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.editPipeline",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.openLog",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.cancelRun",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.openRunOverview",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.openPipelineOverview",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.copyPath",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.selectPipeline",
+          "when": "false"
+        },
+        {
+          "command": "adoPipelines.selectRun",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Azure DevOps Pipeline Manager",
+      "properties": {
+        "adoPipelines.org": {
+          "type": "string",
+          "default": "",
+          "description": "Azure DevOps organization (e.g. `contoso` for https://dev.azure.com/contoso)."
+        },
+        "adoPipelines.project": {
+          "type": "string",
+          "default": "",
+          "description": "Azure DevOps project name."
+        },
+        "adoPipelines.tenantId": {
+          "type": "string",
+          "default": "organizations",
+          "description": "Microsoft Entra tenant id (or `organizations`)."
+        },
+        "adoPipelines.logRefreshIntervalActiveMs": {
+          "type": "number",
+          "default": 1000,
+          "description": "Polling interval (ms) for the active step's log."
+        },
+        "adoPipelines.logRefreshIntervalIdleMs": {
+          "type": "number",
+          "default": 5000,
+          "description": "Polling interval (ms) for non-active step logs."
+        },
+        "adoPipelines.timelineRefreshIntervalActiveMs": {
+          "type": "number",
+          "default": 2000,
+          "description": "Polling interval (ms) for the timeline of a live run."
+        },
+        "adoPipelines.timelineRefreshIntervalIdleMs": {
+          "type": "number",
+          "default": 10000,
+          "description": "Polling interval (ms) for the timeline of completed runs."
+        },
+        "adoPipelines.openOverviewOnSelect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the pipeline overview tab when a pipeline is selected in the tree."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "adoPipelines.commandPalette",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p"
+      },
+      {
+        "command": "adoPipelines.savePipelineToBranch",
+        "key": "ctrl+s",
+        "mac": "cmd+s",
+        "when": "resourceScheme == ado-pipeline && editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "vsce package --no-dependencies -o ado-pipeline-manager.vsix",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.86.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vscode/vsce": "^2.32.0",
+    "eslint": "^8.50.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  }
+}
